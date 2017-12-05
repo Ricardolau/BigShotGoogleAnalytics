@@ -17,7 +17,7 @@ jimport( 'joomla.html.parameter');
 
 class plgSystemBigshotgoogleanalytics extends JPlugin
 {
-	function plgSystemBigshotgoogleanalytics(&$subject, $config)
+	public function __construct(&$subject, $config)
 	{
 		parent::__construct($subject, $config);
 		$this->_plugin = JPluginHelper::getPlugin( 'system', 'bigshotgoogleanalytics' );
