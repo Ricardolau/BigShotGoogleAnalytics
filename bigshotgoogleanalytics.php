@@ -1,11 +1,11 @@
 <?php
 ######################################################################
-# BIGSHOT Google Analytics          	          	          	     #
-# Copyright (C) 2013 by BIGSHOT  	   	   	   	   	   	   	   	   	 #
-# Homepage   : www.thinkBIGSHOT.com		   	   	   	   	   	   		 #
-# Author     : Jeff Henry	    		   	   	   	   	   	   	   	 #
-# Email      : JeffH@thinkBIGSHOT.com 	   	   	   	   	   	   	     #
-# Version    : 1.8                      	   	    	   	   		 #
+# BIGSHOT Google Analytics                                           #
+# Copyright (C) 2013 by BIGSHOT                                      #
+# Homepage   : www.thinkBIGSHOT.com                                  #
+# Author     : Jeff Henry                                            #
+# Email      : JeffH@thinkBIGSHOT.com                                #
+# Version    : 1.8                                                   #
 # License    : http://www.gnu.org/copyleft/gpl.html GNU/GPL          #
 ######################################################################
 
@@ -17,39 +17,37 @@ jimport( 'joomla.html.parameter');
 
 class plgSystemBigshotgoogleanalytics extends JPlugin
 {
-	public function __construct(&$subject, $config)
-	{
-		parent::__construct($subject, $config);
-		$this->_plugin = JPluginHelper::getPlugin( 'system', 'bigshotgoogleanalytics' );
-		$this->_params = new JRegistry( $this->_plugin->params );
-	}
-	
-	function onAfterRender()
-	{
-		$mainframe = JFactory::getApplication();
-		$web_property_id = $this->params->get('web_property_id', '');
-		if($web_property_id == '' || $mainframe->isAdmin() || strpos($_SERVER["PHP_SELF"], "index.php") === false)
-		{
-			return;
-		}
+    public function __construct(&$subject, $config)
+    {
+        parent::__construct($subject, $config);
+        $this->_plugin = JPluginHelper::getPlugin( 'system', 'bigshotgoogleanalytics' );
+        $this->_params = new JRegistry( $this->_plugin->params );
+    }
+    
+    function onAfterRender()
+    {
+        $mainframe = JFactory::getApplication();
+        $web_property_id = $this->params->get('web_property_id', '');
+        if($web_property_id == '' || $mainframe->isAdmin() || strpos($_SERVER["PHP_SELF"], "index.php") === false)
+        {
+            return;
+        }
 
-		$buffer = JResponse::getBody();
-		$google_analytics_javascript = "
-<script type='text/javascript'>
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', '".$web_property_id."']);
-  _gaq.push(['_trackPageview']);
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+        $buffer = JResponse::getBody();
+        $google_analytics_javascript = "
+                  <script async src='https://www.googletagmanager.com/gtag/js?id=".$web_property_id."'></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '".$web_property_id."');
 </script>";
 
-		
-		$buffer = str_replace ("</head>", $google_analytics_javascript."</head>", $buffer);
-		JResponse::setBody($buffer);
-		return true;
-	}
+        
+        $buffer = str_replace ("</head>", $google_analytics_javascript."</head>", $buffer);
+        JResponse::setBody($buffer);
+        return true;
+    }
 }
 ?>
