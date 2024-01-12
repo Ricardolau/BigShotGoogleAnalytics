@@ -28,12 +28,12 @@ class plgSystemBigshotgoogleanalytics extends JPlugin
     {
         $mainframe = JFactory::getApplication();
         $web_property_id = $this->params->get('web_property_id', '');
-        if($web_property_id == '' || $mainframe->isAdmin() || strpos($_SERVER["PHP_SELF"], "index.php") === false)
+        if($web_property_id == '' || $mainframe->isClient('admin') || strpos($_SERVER["PHP_SELF"], "index.php") === false)
         {
             return;
         }
 
-        $buffer = JResponse::getBody();
+        $buffer = JFactory::getApplication()->getBody();
         $google_analytics_javascript = "
                   <script async src='https://www.googletagmanager.com/gtag/js?id=".$web_property_id."'></script>
 <script>
@@ -46,7 +46,7 @@ class plgSystemBigshotgoogleanalytics extends JPlugin
 
         
         $buffer = str_replace ("</head>", $google_analytics_javascript."</head>", $buffer);
-        JResponse::setBody($buffer);
+        JFactory::getApplication()->setBody($buffer);
         return true;
     }
 }
